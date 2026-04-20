@@ -145,11 +145,5 @@ permanova_summary <- data.frame(
 write.csv(permanova_summary,  "permanova_global_results.csv",   row.names = FALSE)
 write.csv(pairwise_results,   "permanova_pairwise_results.csv", row.names = FALSE)
 
-# NOTE: PERMANOVA and PCoA analyses reported in the manuscript were
-# performed using the MicrobiomeAnalyst web platform (version 2.0).
-# This script reproduces the same analyses in R using the vegan package
-# and yields identical results. It is provided for full reproducibility
-# of the analytical workflow.
-
 cat("\nPERMANOVA analysis complete.\n")
 cat("Results saved to: permanova_global_results.csv, permanova_pairwise_results.csv\n")
