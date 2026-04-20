@@ -223,3 +223,8 @@ combined_plot <- ggarrange(p_a, p_b, p_c,
 ggsave("Supplementary_Figure_S2.png", combined_plot, width = 14, height = 5, dpi = 300)
 cat("Supplementary Figure S2 saved: Supplementary_Figure_S2.png\n")
 cat("\nSpearman analysis complete.\n")
+
+
+ggsave("Supplementary_Figure_S2.png", combined_plot, width = 14, height = 5, dpi = 300)
+cat("Supplementary Figure S2 saved: Supplementary_Figure_S2.png\n")
+cat("\nSpearman analysis complete.\n")
