@@ -28,38 +28,38 @@
 #
 # Software: R version 4.5.3, MicrobiomeStat v1.18
 # ============================================================
- 
+
 if (!requireNamespace("MicrobiomeStat", quietly = TRUE)) {
   install.packages("MicrobiomeStat")
 }
 library(MicrobiomeStat)
- 
+
 # ============================================================
 # LOAD DATA
 # ============================================================
- 
+
 otu_phylum <- read.csv("linda_otu_phylum.csv", row.names = 1, check.names = FALSE)
 otu_genus  <- read.csv("linda_otu_genus.csv",  row.names = 1, check.names = FALSE)
 meta       <- read.csv("linda_meta_phylum.csv", row.names = 1)
- 
+
 # Align samples
 common_samples <- intersect(colnames(otu_phylum), rownames(meta))
 otu_phylum <- otu_phylum[, common_samples]
 otu_genus  <- otu_genus[,  common_samples]
 meta       <- meta[common_samples, , drop = FALSE]
- 
+
 cat("Samples:", ncol(otu_phylum), "\n")
 cat("Groups:", table(meta$Group), "\n")
- 
+
 # ============================================================
 # FUNCTION: run LinDA for one level and one reference group
 # ============================================================
- 
+
 run_linda <- function(otu_data, meta_data, ref_group, level_name) {
- 
+
   meta_ref       <- meta_data
   meta_ref$Group <- relevel(factor(meta_ref$Group), ref = ref_group)
- 
+
   linda_obj <- linda(
     feature.dat      = as.matrix(otu_data),
     meta.dat         = meta_ref,
@@ -70,7 +70,7 @@ run_linda <- function(otu_data, meta_data, ref_group, level_name) {
     alpha            = 0.05,
     verbose          = FALSE
   )
- 
+
   results_list <- lapply(names(linda_obj$output), function(comp) {
     res <- linda_obj$output[[comp]]
     data.frame(
@@ -83,32 +83,32 @@ run_linda <- function(otu_data, meta_data, ref_group, level_name) {
       padj           = round(res$padj, 4)
     )
   })
- 
+
   do.call(rbind, results_list)
 }
- 
+
 # ============================================================
 # RUN LINDA ITERATIVELY FOR ALL REFERENCE GROUPS
 # All pairwise comparisons as stated in Methods
 # ============================================================
- 
+
 reference_groups <- c("HC", "AG", "AI", "IBS")
 all_results      <- data.frame()
- 
+
 for (ref in reference_groups) {
- 
+
   cat("\n--- Running LinDA: reference =", ref, "---\n")
- 
+
   res_phylum <- run_linda(otu_phylum, meta, ref, "Phylum")
   res_genus  <- run_linda(otu_genus,  meta, ref, "Genus")
- 
+
   combined    <- rbind(res_phylum, res_genus)
   all_results <- rbind(all_results, combined)
- 
+
   # Save per reference
   outfile <- paste0("linda_results_reference_", ref, ".csv")
   write.csv(combined, outfile, row.names = FALSE)
- 
+
   # Print significant FDR < 0.05
   sig <- combined[combined$padj < 0.05, ]
   if (nrow(sig) > 0) {
@@ -118,15 +118,15 @@ for (ref in reference_groups) {
     cat("No significant taxa (FDR < 0.05) with reference =", ref, "\n")
   }
 }
- 
+
 # ============================================================
 # SAVE COMBINED RESULTS ALL REFERENCES
 # ============================================================
- 
+
 write.csv(all_results, "linda_results_ALL_LEVELS.csv", row.names = FALSE)
- 
+
 cat("\n\nSummary - FDR < 0.05 across all comparisons:\n")
 print(all_results[all_results$padj < 0.05, ])
- 
+
 cat("\nAll results saved to: linda_results_ALL_LEVELS.csv\n")
 cat("Analysis complete.\n")
