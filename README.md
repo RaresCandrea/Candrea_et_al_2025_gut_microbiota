@@ -66,4 +66,4 @@ install.packages(c("MicrobiomeStat", "vegan", "ggplot2", "ggpubr",
 
 If you use these scripts, please cite:
 
-> Candrea A.R., Gavrilaș L.I., Mocan A., Rusu A., Crișan G. Comparative Analysis of Gut Microbiota Patterns in Irritable Bowel Syndrome, Anxiety, and Autoimmune Disorders. *Biomedicines* 2025.
+> Candrea A.R., Gavrilaș L.I., Mocan A., Rusu A., Crișan G. Comparative Analysis of Gut Microbiota Patterns in Irritable Bowel Syndrome, Anxiety, and Autoimmune Disorders. *Biomedicines* 2026.
